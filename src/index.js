@@ -1,17 +1,28 @@
-import express from 'express'
-import bodyParser from 'body-parser'
+const express = require('express')
+const http = require('http')
+const socketio = require('socket.io')
 
-import { PORT } from './config/server-config.js'
+const { PORT } = require('./config/server-config')
 
 const app = express();
+const server = http.createServer(app);
+const io = socketio(server)
 
-const serverSetUp = () => {
-    app.use(bodyParser.json())
-    app.use(bodyParser.urlencoded({extended: true}))
+io.on('connection', (socket) => {
+    console.log('User has connected', socket.id);
 
-    app.listen(PORT, async () => {
-        console.log(`Server started at port ${PORT}`)
+    setInterval(() => {
+        socket.emit('from_server')
+    }, 2000)
+
+    socket.on('from_client', () => {
+        console.log('New event from client')
     })
-}
 
-export default serverSetUp();
+  });
+
+app.use('/', express.static(__dirname + '/public'))
+
+server.listen(PORT, async () => {
+    console.log(`Server started at port ${PORT}`)
+})
