@@ -4,7 +4,7 @@ const socketio = require('socket.io')
 const connect = require('./config/database-config')
 const Chat = require('./models/chat')
 
-// const { PORT } = require('./config/server-config')
+const { PORT } = require('./config/server-config')
 
 const app = express();
 const server = http.createServer(app);
@@ -46,8 +46,8 @@ app.get('/chat/:roomId', async (req, res) => {
 app.set('view engine', 'ejs')
 app.use('/', express.static(__dirname + '/public'))
 
-server.listen(3000, async () => {
-    console.log(`Server started at port`)
+server.listen(PORT, async () => {
+    console.log(`Server started at port ${PORT}`)
     await connect();
     console.log('MongoDB connected')
 })
